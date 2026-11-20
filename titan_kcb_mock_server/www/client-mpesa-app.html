@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<style>
+	:root { --green: #3d9b35; --blue: #0a3d78; }
+	* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+	html, body { margin: 0; height: 100%; }
+	body { background: #e9edf1; font-family: -apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+	.stage { position: relative; }
+	/* iPhone 14 proportions: 390x844 screen */
+	.phone { position: absolute; top: 0; left: 0; transform-origin: top left; width: 414px; height: 868px; padding: 12px; border-radius: 68px; background: #1b1b1d;
+		box-shadow: 0 0 0 2px #3a3a3d inset, 0 30px 60px rgba(0,0,0,.35); }
+	.phone::before, .phone::after { content: ""; position: absolute; background: #2a2a2d; border-radius: 3px; }
+	.phone::before { left: -4px; top: 150px; width: 4px; height: 60px; box-shadow: 0 80px 0 #2a2a2d, 0 -50px 0 -1px #2a2a2d; }
+	.phone::after { right: -4px; top: 200px; width: 4px; height: 100px; }
+	.screen { position: relative; width: 390px; height: 844px; border-radius: 56px; overflow: hidden; background: #fff; }
+	.notch { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 126px; height: 36px; background: #000; border-radius: 20px; z-index: 20; }
+	.status { position: absolute; top: 0; left: 0; right: 0; height: 54px; padding: 18px 30px 0; display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; z-index: 15; pointer-events: none; }
+	.home-bar { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px; border-radius: 3px; background: #111; z-index: 20; }
+
+	.view { position: absolute; inset: 0; display: flex; flex-direction: column; background: #f2f2f7; transition: transform .3s ease; }
+	#threadView { transform: translateX(100%); background: #fff; }
+	.screen.open #threadView { transform: none; }
+	.screen.open #listView { transform: translateX(-30%); }
+
+	/* conversation list */
+	.list-head { padding: 62px 20px 8px; background: #f2f2f7; }
+	.list-head h1 { margin: 0; font-size: 32px; }
+	.convos { margin: 10px 14px; background: #fff; border-radius: 12px; overflow: hidden; }
+	.convo { display: flex; gap: 12px; align-items: center; padding: 12px 14px; cursor: pointer; border-bottom: 1px solid #eee; position: relative; }
+	.convo:last-child { border: 0; } .convo:active { background: #ececf1; }
+	.avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 11px; display: grid; place-items: center; letter-spacing: .4px; }
+	.avatar.MPESA { background: var(--green); } .avatar.ERPNEXT { background: #2490ef; font-size: 13px; } .avatar.KCB { background: var(--blue); font-size: 14px; }
+	.convo .body { flex: 1; min-width: 0; }
+	.convo .row { display: flex; justify-content: space-between; gap: 8px; }
+	.convo .name { font-weight: 600; font-size: 16px; } .convo .time { color: #8e8e93; font-size: 13px; }
+	.convo .preview { padding-right: 28px; color: #8e8e93; font-size: 14px; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+	.badge { position: absolute; right: 14px; bottom: 12px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: #0a84ff; color: #fff; font-size: 12px; font-weight: 600; display: grid; place-items: center; }
+	.badge[hidden] { display: none; }
+	.convo.unread .name, .convo.unread .preview { color: #000; }
+	.no-number { margin: 40px 24px; text-align: center; color: #8e8e93; font-size: 14px; }
+
+	/* thread */
+	.thead { padding: 54px 14px 8px; background: #f7f7f9; border-bottom: 1px solid #ddd; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+	.back { color: #0a84ff; font-size: 17px; cursor: pointer; } .thead .center { text-align: center; } .thead .center .avatar { width: 44px; height: 44px; margin: 0 auto 2px; } .thead .center div { font-size: 11px; }
+	.wallet { background: var(--green); color: #fff; text-align: center; padding: 8px 0 10px; }
+	.wallet small { display: block; font-size: 11px; opacity: .85; } .wallet strong { font-size: 24px; display: inline-block; transition: transform .3s; } .wallet strong.bump { transform: scale(1.12); }
+	.thread { flex: 1; overflow-y: auto; padding: 14px 12px 40px; display: flex; flex-direction: column; gap: 10px; background: #fff; }
+	.sms { user-select: text; -webkit-user-select: text; align-self: flex-start; max-width: 84%; background: #e9e9eb; border-radius: 18px; padding: 10px 14px; font-size: 15px; line-height: 1.35; }
+	.sms time { display: block; margin-top: 4px; font-size: 11px; color: #8e8e93; }
+	.sms.new { animation: slidein .55s cubic-bezier(.2,.9,.3,1.2); }
+	@keyframes slidein { from { transform: translateX(-120%); opacity: 0; } to { transform: none; opacity: 1; } }
+	.otp { background: #fff; border: 1px dashed #2490ef; color: #0b5cad; border-radius: 8px; padding: 1px 7px; font-weight: 700; letter-spacing: 2px; cursor: copy; white-space: nowrap; }
+	.otp.copied { background: #d9f2d9; border-color: #3d9b35; color: #1d6b12; }
+	.empty { margin: auto; color: #8e8e93; font-size: 14px; }
+
+	/* notification banner */
+	.banner { position: absolute; top: 56px; left: 10px; right: 10px; z-index: 30; background: rgba(250,250,252,.96); border-radius: 22px; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.25);
+		display: flex; gap: 10px; align-items: center; transform: translateY(-160%); opacity: 0; transition: transform .45s cubic-bezier(.2,.9,.3,1.1), opacity .2s; cursor: pointer; }
+	.banner.show { transform: none; opacity: 1; }
+	.banner .avatar { width: 38px; height: 38px; font-size: 9px; } .banner .t { font-weight: 600; font-size: 14px; } .banner .m { font-size: 13px; color: #333; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+<div class="phone" id="phone">
+	<div class="screen" id="screen">
+		<div class="notch"></div>
+		<div class="status"><span id="clock">9:41</span><span>5G ▮▮▮</span></div>
+
+		<div class="banner" id="banner"><div class="avatar" id="bAv"></div><div><div class="t" id="bTitle"></div><div class="m" id="bText"></div></div></div>
+
+		<section class="view" id="listView">
+			<div class="list-head"><h1>Messages</h1></div>
+			<div class="convos" id="convos"></div>
+			{% if not msisdn %}<div class="no-number">Open this page with <b>?msisdn=2547XXXXXXXX</b> to watch a phone number.</div>{% endif %}
+		</section>
+
+		<section class="view" id="threadView">
+			<div class="thead"><span class="back" id="back">‹ Messages</span><div class="center"><div class="avatar" id="tAv"></div><div id="tName"></div></div><span></span></div>
+			<div class="wallet" id="wallet" hidden><small>M-PESA balance</small><strong id="balance">Ksh0.00</strong></div>
+			<div class="thread" id="thread"></div>
+		</section>
+		<div class="home-bar"></div>
+	</div>
+</div>
+</div>
+
+<script>
+(function () {
+	const MSISDN = {{ msisdn | tojson }};
+	const API = "/api/method/titan_kcb_mock_server.api.";
+	const THREADS = { ERPNEXT: { title: "ERPNext", label: "ERP" }, MPESA: { title: "MPESA", label: "MPESA" }, KCB: { title: "KCB BANK", label: "KCB" } };
+	const READ_KEY = "mock_sms_read:" + MSISDN;
+	const state = { messages: {ERPNEXT: [], MPESA: [], KCB: []}, seen: new Set(), first: true, open: null, lastBalance: null };
+	let read = new Set(JSON.parse(localStorage.getItem(READ_KEY) || "[]"));
+	const $ = (id) => document.getElementById(id);
+	const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+	const money = (n) => "Ksh" + Number(n || 0).toLocaleString("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	const parse = (s) => new Date(String(s).replace(" ", "T"));
+	const short = (d) => { const n = new Date(); return d.toDateString() === n.toDateString() ? d.toLocaleTimeString("en-KE", { hour: "numeric", minute: "2-digit" }) : d.toLocaleDateString("en-KE", { day: "numeric", month: "short" }); };
+
+	// fit the phone to the window
+	function fit() {
+		const s = Math.min((innerHeight - 24) / 868, (innerWidth - 24) / 414, 1.4);
+		$("phone").style.transform = "scale(" + s + ")";
+		$("stage").style.width = 414 * s + "px"; $("stage").style.height = 868 * s + "px";
+	}
+	addEventListener("resize", fit); fit();
+	function clock() { const d = new Date(); $("clock").textContent = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0"); }
+	clock(); setInterval(clock, 15000);
+
+	// ---- sound: on by default. Browsers only allow audio after a user gesture, so we
+	// create the context now and resume it on the first click/tap/key anywhere on the page.
+	let audio = null;
+	try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+	["pointerdown", "keydown", "touchstart"].forEach((ev) => addEventListener(ev, () => audio && audio.state === "suspended" && audio.resume(), { passive: true }));
+	function beep() {
+		if (!audio || audio.state !== "running") return;
+		[[880, 0], [1175, 0.14]].forEach(([f, t]) => {
+			const o = audio.createOscillator(), g = audio.createGain();
+			o.frequency.value = f; o.type = "sine"; o.connect(g); g.connect(audio.destination);
+			const s = audio.currentTime + t;
+			g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(0.3, s + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, s + 0.25);
+			o.start(s); o.stop(s + 0.26);
+		});
+	}
+
+	function unread(key) { return state.messages[key].filter((m) => !read.has(m.name)).length; }
+
+	function renderList() {
+		const lastAt = (k) => { const m = state.messages[k]; return m.length ? parse(m[m.length - 1].sent_at || m[m.length - 1].creation).getTime() : 0; };
+		$("convos").innerHTML = Object.keys(THREADS).sort((a, b) => lastAt(b) - lastAt(a)).map((key) => {
+			const msgs = state.messages[key], last = msgs[msgs.length - 1], n = unread(key);
+			return `<div class="convo ${n ? "unread" : ""}" data-key="${key}">
+				<div class="avatar ${key}">${THREADS[key].label}</div>
+				<div class="body"><div class="row"><span class="name">${THREADS[key].title}</span><span class="time">${last ? short(parse(last.sent_at || last.creation)) : ""}</span></div>
+				<div class="preview">${last ? esc(last.text) : "No messages yet"}</div></div>
+				<span class="badge" ${n ? "" : "hidden"}>${n}</span></div>`;
+		}).join("");
+		document.querySelectorAll(".convo").forEach((el) => (el.onclick = () => openThread(el.dataset.key)));
+	}
+
+	function bubble(m, animate) {
+		const el = document.createElement("div");
+		el.className = "sms" + (animate ? " new" : "");
+		let html = esc(m.text);
+		if (m.sender === "ERPNEXT") html = html.replace(/\b(\d{6})\b/, '<span class="otp" title="Tap to copy">$1</span>');
+		el.innerHTML = html + "<time>" + parse(m.sent_at || m.creation).toLocaleString("en-KE", { hour: "numeric", minute: "2-digit", day: "numeric", month: "short" }) + "</time>";
+		const chip = el.querySelector(".otp");
+		if (chip) chip.onclick = () => copyText(chip.textContent, chip);
+		return el;
+	}
+
+	function copyText(text, chip) {
+		const done = () => { chip.classList.add("copied"); const old = chip.textContent; chip.textContent = "Copied"; setTimeout(() => { chip.textContent = old; chip.classList.remove("copied"); }, 1200); };
+		if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, done);
+		else { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (e) {} t.remove(); done(); }
+	}
+
+	function openThread(key) {
+		state.open = key;
+		$("tAv").className = "avatar " + key; $("tAv").textContent = THREADS[key].label; $("tName").textContent = THREADS[key].title;
+		$("wallet").hidden = key !== "MPESA";
+		const box = $("thread"); box.innerHTML = "";
+		if (!state.messages[key].length) box.innerHTML = '<div class="empty">No messages yet</div>';
+		state.messages[key].forEach((m) => { box.appendChild(bubble(m, false)); read.add(m.name); });
+		localStorage.setItem(READ_KEY, JSON.stringify([...read]));
+		$("screen").classList.add("open"); box.scrollTop = box.scrollHeight;
+		renderList();
+	}
+	$("back").onclick = () => { state.open = null; $("screen").classList.remove("open"); renderList(); };
+
+	let bannerTimer;
+	function banner(key, m) {
+		$("bAv").className = "avatar " + key; $("bAv").textContent = THREADS[key].label;
+		$("bTitle").textContent = THREADS[key].title; $("bText").textContent = m.text;
+		$("banner").classList.add("show"); $("banner").onclick = () => { $("banner").classList.remove("show"); openThread(key); };
+		clearTimeout(bannerTimer); bannerTimer = setTimeout(() => $("banner").classList.remove("show"), 5000);
+	}
+
+	function ingest(data) {
+		const bal = $("balance");
+		bal.textContent = money(data.balance);
+		if (state.lastBalance !== null && data.balance !== state.lastBalance) { bal.classList.add("bump"); setTimeout(() => bal.classList.remove("bump"), 400); }
+		state.lastBalance = data.balance;
+		let changed = false;
+		data.messages.forEach((m) => {
+			if (state.seen.has(m.name)) return;
+			state.seen.add(m.name);
+			const key = THREADS[m.sender] ? m.sender : "MPESA";
+			state.messages[key].push(m); changed = true;
+			if (state.first) return;
+			beep();
+			if (state.open === key) {
+				const box = $("thread"); box.querySelector(".empty") && (box.innerHTML = "");
+				box.appendChild(bubble(m, true)); box.scrollTop = box.scrollHeight; read.add(m.name);
+				localStorage.setItem(READ_KEY, JSON.stringify([...read]));
+			} else banner(key, m);
+		});
+		state.first = false;
+		if (changed) renderList();
+	}
+
+	async function poll() {
+		if (!MSISDN) return;
+		try {
+			const r = await fetch(API + "get_phone_state?" + new URLSearchParams({ msisdn: MSISDN }));
+			ingest((await r.json()).message);
+		} catch (e) {}
+	}
+	renderList();
+	poll().then(() => { const k = location.hash.slice(1).toUpperCase(); if (THREADS[k]) openThread(k); }); // deep link: #mpesa / #kcb
+	setInterval(poll, 2000);
+})();
+</script>
+</body>
+</html>

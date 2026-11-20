@@ -1,0 +1,63 @@
+{
+ "doctype": "DocType",
+ "name": "Mock M-Pesa SMS",
+ "module": "Titan Kcb Mock Server",
+ "engine": "InnoDB",
+ "field_order": [
+  "msisdn",
+  "sender",
+  "text",
+  "sent_at",
+  "is_read"
+ ],
+ "fields": [
+  {
+   "fieldname": "msisdn",
+   "fieldtype": "Data",
+   "label": "MSISDN",
+   "reqd": 1,
+   "in_list_view": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sender",
+   "fieldtype": "Data",
+   "label": "Sender",
+   "default": "MPESA",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "text",
+   "fieldtype": "Small Text",
+   "label": "Text",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sent_at",
+   "fieldtype": "Datetime",
+   "label": "Sent At",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "is_read",
+   "fieldtype": "Check",
+   "label": "Is Read"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "editable_grid": 0,
+ "autoname": "MSMS-.#####"
+}

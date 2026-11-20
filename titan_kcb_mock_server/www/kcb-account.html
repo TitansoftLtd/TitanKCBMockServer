@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<style>
+	:root { --blue: #0a3d78; --blue-dark: #07294f; --green: #5fae2e; --bg: #eef1f5; --line: #dfe4ea; --ink: #1c2733; --muted: #6b7785; }
+	* { box-sizing: border-box; }
+	body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif; }
+	.demo { background: #fff7d6; color: #6a5300; text-align: center; font-size: 12px; padding: 5px; border-bottom: 1px solid #f0e2a0; }
+	header { background: var(--blue); color: #fff; }
+	.top { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 12px 20px; }
+	.brand { display: flex; align-items: center; gap: 10px; }
+	.mark { background: #fff; color: var(--blue); font-weight: 800; font-size: 20px; letter-spacing: 1px; padding: 4px 10px; border-radius: 6px; border-bottom: 4px solid var(--green); }
+	.brand small { font-size: 13px; opacity: .85; }
+	.top .spacer { flex: 1; }
+	.user { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+	.user .av { width: 34px; height: 34px; border-radius: 50%; background: var(--green); display: grid; place-items: center; font-weight: 700; }
+	.user .meta { text-align: right; line-height: 1.2; } .user .meta span { display: block; font-size: 11px; opacity: .75; }
+	nav { background: var(--blue-dark); }
+	nav ul { max-width: 1180px; margin: 0 auto; padding: 0 20px; list-style: none; display: flex; gap: 4px; }
+	nav li { padding: 11px 16px; font-size: 13px; color: #c8d6ea; cursor: default; border-bottom: 3px solid transparent; }
+	nav li.on { color: #fff; border-color: var(--green); }
+	.wrap { max-width: 1180px; margin: 22px auto; padding: 0 20px; display: grid; grid-template-columns: 220px 1fr; gap: 22px; }
+	aside { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 0; align-self: start; }
+	aside div { padding: 10px 18px; color: var(--muted); font-size: 13px; cursor: default; border-left: 3px solid transparent; }
+	aside div.on { color: var(--blue); font-weight: 600; background: #f3f7fc; border-color: var(--blue); }
+	h1 { font-size: 20px; margin: 0 0 14px; font-weight: 600; }
+	.card { background: #fff; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 18px; }
+	.card h2 { margin: 0; padding: 14px 18px; font-size: 15px; font-weight: 600; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
+	.card h2 small { font-weight: 400; color: var(--muted); font-size: 12px; }
+	.summary { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 0; }
+	.summary > div { padding: 18px; border-right: 1px solid var(--line); }
+	.summary > div:last-child { border-right: 0; }
+	.lbl { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+	.acc-name { font-size: 17px; font-weight: 600; margin-top: 4px; } .acc-no { color: var(--muted); margin-top: 2px; }
+	.bal { font-size: 26px; font-weight: 700; color: var(--blue); margin-top: 4px; }
+	select { padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 12px; background: #fff; }
+	table { width: 100%; border-collapse: collapse; }
+	th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid var(--line); }
+	td { padding: 12px 18px; border-bottom: 1px solid #eef1f5; vertical-align: top; }
+	td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+	.desc b { display: block; font-weight: 600; } .desc span { color: var(--muted); font-size: 12px; }
+	.debit { color: #b3261e; font-weight: 600; }
+	.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+	.SUCCESS { background: #e3f4e0; color: #1d6b12; } .FAILED { background: #fde4e2; color: #a3231b; } .PENDING { background: #fff1cc; color: #8a6200; }
+	.empty { padding: 30px; text-align: center; color: var(--muted); }
+	.foot { text-align: center; color: var(--muted); font-size: 12px; padding: 10px 0 30px; }
+	@media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } aside { display: none; } .summary { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="demo">Demonstration screen: simulated bank account for the Titan Pay demo. No real money moves here.</div>
+<header>
+	<div class="top">
+		<div class="brand"><span class="mark">KCB</span><small>Internet Banking</small></div>
+		<div class="spacer"></div>
+		<div class="user"><div class="meta"><b id="who">Account holder</b><span>Last login: <span id="login"></span></span></div><div class="av" id="av">A</div></div>
+	</div>
+	<nav><ul><li>Dashboard</li><li class="on">Accounts</li><li>Transfers</li><li>Payments</li><li>Statements</li><li>Services</li></ul></nav>
+</header>
+
+<div class="wrap">
+	<aside>
+		<div class="on">Account summary</div><div>Mini statement</div><div>Funds transfer</div><div>Send to M-PESA</div><div>Standing orders</div><div>Cheque services</div>
+	</aside>
+	<main>
+		<h1>Account summary</h1>
+		<div class="card">
+			<h2>Current account <select id="picker" title="Switch account"></select></h2>
+			<div class="summary">
+				<div><div class="lbl">Account</div><div class="acc-name" id="accname">-</div><div class="acc-no" id="accno">-</div></div>
+				<div><div class="lbl">Available balance</div><div class="bal" id="avail">KES 0.00</div></div>
+				<div><div class="lbl">Sent to M-PESA (successful)</div><div class="bal" id="sent" style="color:#1c2733">KES 0.00</div></div>
+			</div>
+		</div>
+		<div class="card">
+			<h2>Mini statement <small id="updated">Updating…</small></h2>
+			<table>
+				<thead><tr><th>Date</th><th>Description</th><th>Reference</th><th>Status</th><th class="num">Debit (KES)</th><th class="num">Balance (KES)</th></tr></thead>
+				<tbody id="rows"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+			</table>
+		</div>
+	</main>
+</div>
+<div class="foot">Simulated for demonstration. Not affiliated with KCB Group.</div>
+
+<script>
+(function () {
+	const API = "/api/method/titan_kcb_mock_server.api.";
+	let selected = {{ account | tojson }};
+	const $ = (id) => document.getElementById(id);
+	const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+	const money = (n) => Number(n || 0).toLocaleString("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	const when = (s) => new Date(String(s).replace(" ", "T")).toLocaleString("en-KE", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+	$("login").textContent = new Date().toLocaleString("en-KE", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+
+	$("picker").onchange = (e) => { selected = e.target.value; const q = new URLSearchParams(location.search); q.set("account", selected); history.replaceState(null, "", "?" + q); poll(); };
+
+	function render(s) {
+		const acc = s.accounts.find((a) => a.account_number === s.selected);
+		$("picker").innerHTML = s.accounts.map((a) => `<option value="${esc(a.account_number)}"${a.account_number === s.selected ? " selected" : ""}>${esc(a.account_number)}</option>`).join("");
+		if (!acc) { $("rows").innerHTML = '<tr><td colspan="6" class="empty">No mock account yet. Run the demo setup.</td></tr>'; return; }
+		selected = s.selected;
+		$("who").textContent = acc.account_name || "Account holder";
+		$("av").textContent = (acc.account_name || "A")[0].toUpperCase();
+		$("accname").textContent = acc.account_name; $("accno").textContent = acc.account_number + " · KES";
+		$("avail").textContent = "KES " + money(acc.balance);
+		const ok = s.transactions.filter((t) => t.status === "SUCCESS");
+		$("sent").textContent = "KES " + money(ok.reduce((n, t) => n + Number(t.amount), 0));
+		// running balance: start from the current balance and walk back through successful debits
+		let running = Number(acc.balance);
+		$("rows").innerHTML = s.transactions.length ? s.transactions.map((t) => {
+			const debited = t.status === "SUCCESS";
+			const row = `<tr>
+				<td>${when(t.creation)}</td>
+				<td class="desc"><b>FT TO M-PESA ${esc(t.credit_account_number)}</b><span>${esc(t.beneficiary_details)}${t.payment_details ? " · " + esc(t.payment_details) : ""}${t.failure_reason ? " · " + esc(t.failure_reason) : ""}</span></td>
+				<td>${esc(t.ft_reference || t.transaction_reference)}<br><span style="color:#6b7785;font-size:12px">${esc(t.transaction_reference)}</span></td>
+				<td><span class="pill ${esc(t.status)}">${t.status === "SUCCESS" ? "Completed" : t.status === "PENDING" ? "Processing" : "Failed"}</span></td>
+				<td class="num ${debited ? "debit" : ""}">${debited ? money(t.amount) : "-"}</td>
+				<td class="num">${money(running)}</td></tr>`;
+			if (debited) running += Number(t.amount);
+			return row;
+		}).join("") : '<tr><td colspan="6" class="empty">No transactions yet.</td></tr>';
+		$("updated").textContent = "Updated " + new Date().toLocaleTimeString("en-KE");
+	}
+
+	async function poll() {
+		try {
+			const r = await fetch(API + "get_account_state?" + new URLSearchParams(selected ? { account_number: selected } : {}));
+			render((await r.json()).message);
+		} catch (e) {}
+	}
+	poll(); setInterval(poll, 2000);
+})();
+</script>
+</body>
+</html>

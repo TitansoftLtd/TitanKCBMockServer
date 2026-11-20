@@ -1,0 +1,85 @@
+{
+ "doctype": "DocType",
+ "name": "KCB Mock Server Settings",
+ "module": "Titan Kcb Mock Server",
+ "engine": "InnoDB",
+ "field_order": [
+  "callback_url",
+  "callback_delay_seconds",
+  "callback_site_header",
+  "auth_section",
+  "consumer_key",
+  "consumer_secret",
+  "balances_section",
+  "starting_balance",
+  "reset_mock"
+ ],
+ "fields": [
+  {
+   "fieldname": "callback_url",
+   "fieldtype": "Data",
+   "label": "Callback URL",
+   "description": "Where the mock POSTs the FT callback. Empty = this site's titan_kcb callback endpoint."
+  },
+  {
+   "fieldname": "callback_delay_seconds",
+   "fieldtype": "Int",
+   "label": "Callback Delay Seconds",
+   "default": "3"
+  },
+  {
+   "fieldname": "callback_site_header",
+   "fieldtype": "Data",
+   "label": "Callback Site Header",
+   "description": "Optional. Value for the X-Frappe-Site-Name header; empty = current site name."
+  },
+  {
+   "fieldname": "auth_section",
+   "fieldtype": "Section Break",
+   "label": "Mock Gateway Credentials"
+  },
+  {
+   "fieldname": "consumer_key",
+   "fieldtype": "Data",
+   "label": "Consumer Key",
+   "description": "Optional override. Normally leave empty: the mock reads kcb_mock_consumer_key / kcb_mock_consumer_secret from site_config.json."
+  },
+  {
+   "fieldname": "consumer_secret",
+   "fieldtype": "Password",
+   "label": "Consumer Secret",
+   "description": "Optional override. Normally leave empty: the mock reads kcb_mock_consumer_key / kcb_mock_consumer_secret from site_config.json."
+  },
+  {
+   "fieldname": "balances_section",
+   "fieldtype": "Section Break",
+   "label": "Balances"
+  },
+  {
+   "fieldname": "starting_balance",
+   "fieldtype": "Currency",
+   "label": "Starting Balance",
+   "default": "1000000"
+  },
+  {
+   "fieldname": "reset_mock",
+   "fieldtype": "Button",
+   "label": "Reset mock"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "editable_grid": 0,
+ "issingle": 1
+}

@@ -1,0 +1,151 @@
+{
+ "doctype": "DocType",
+ "name": "Mock FT Transaction",
+ "module": "Titan Kcb Mock Server",
+ "engine": "InnoDB",
+ "field_order": [
+  "transaction_reference",
+  "status",
+  "failure_reason",
+  "company_code",
+  "transaction_type",
+  "debit_account_number",
+  "credit_account_number",
+  "beneficiary_bank_code",
+  "beneficiary_details",
+  "payment_details",
+  "currency",
+  "amount",
+  "message_id",
+  "ft_reference",
+  "merchant_id",
+  "mpesa_transaction_id",
+  "request_payload",
+  "b2c_result",
+  "callback_attempts"
+ ],
+ "fields": [
+  {
+   "fieldname": "transaction_reference",
+   "fieldtype": "Data",
+   "label": "Transaction Reference",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "PENDING\nSUCCESS\nFAILED",
+   "default": "PENDING",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "failure_reason",
+   "fieldtype": "Data",
+   "label": "Failure Reason"
+  },
+  {
+   "fieldname": "company_code",
+   "fieldtype": "Data",
+   "label": "Company Code"
+  },
+  {
+   "fieldname": "transaction_type",
+   "fieldtype": "Data",
+   "label": "Transaction Type"
+  },
+  {
+   "fieldname": "debit_account_number",
+   "fieldtype": "Data",
+   "label": "Debit Account Number"
+  },
+  {
+   "fieldname": "credit_account_number",
+   "fieldtype": "Data",
+   "label": "Credit Account Number",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "beneficiary_bank_code",
+   "fieldtype": "Data",
+   "label": "Beneficiary Bank Code"
+  },
+  {
+   "fieldname": "beneficiary_details",
+   "fieldtype": "Data",
+   "label": "Beneficiary Details"
+  },
+  {
+   "fieldname": "payment_details",
+   "fieldtype": "Data",
+   "label": "Payment Details"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "message_id",
+   "fieldtype": "Data",
+   "label": "Message Id"
+  },
+  {
+   "fieldname": "ft_reference",
+   "fieldtype": "Data",
+   "label": "FT Reference"
+  },
+  {
+   "fieldname": "merchant_id",
+   "fieldtype": "Data",
+   "label": "Merchant Id"
+  },
+  {
+   "fieldname": "mpesa_transaction_id",
+   "fieldtype": "Data",
+   "label": "M-PESA Transaction ID"
+  },
+  {
+   "fieldname": "request_payload",
+   "fieldtype": "Code",
+   "label": "Request Payload",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "b2c_result",
+   "fieldtype": "Code",
+   "label": "Simulated B2C Result",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "callback_attempts",
+   "fieldtype": "Table",
+   "label": "Callback Attempts",
+   "options": "Mock FT Callback Attempt"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "editable_grid": 0,
+ "autoname": "MFT-.#####",
+ "title_field": "transaction_reference"
+}

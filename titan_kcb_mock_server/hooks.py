@@ -8,7 +8,7 @@ app_license = "gpl-3.0"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["frappe"]  # demo only; talks to other apps over HTTP, never imports them
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -279,3 +279,8 @@ app_license = "gpl-3.0"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+# Frappe core treats any "Authorization: Basic/Bearer ..." header as a Frappe API credential and
+# answers 401 itself. The mock gateway uses those headers the way KCB does, so this hook moves
+# the header aside (for mock gateway paths only) before core's validate_auth runs.
+before_request = ["titan_kcb_mock_server.utils.stash_gateway_authorization"]

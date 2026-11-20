@@ -1,0 +1,49 @@
+{
+ "doctype": "DocType",
+ "name": "Mock M-Pesa Wallet",
+ "module": "Titan Kcb Mock Server",
+ "engine": "InnoDB",
+ "field_order": [
+  "msisdn",
+  "wallet_name",
+  "balance"
+ ],
+ "fields": [
+  {
+   "fieldname": "msisdn",
+   "fieldtype": "Data",
+   "label": "MSISDN",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "wallet_name",
+   "fieldtype": "Data",
+   "label": "Wallet Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "balance",
+   "fieldtype": "Currency",
+   "label": "Balance",
+   "in_list_view": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "editable_grid": 0,
+ "autoname": "field:msisdn",
+ "title_field": "msisdn"
+}

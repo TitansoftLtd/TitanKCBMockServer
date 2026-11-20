@@ -1,0 +1,48 @@
+{
+ "doctype": "DocType",
+ "name": "Mock FT Callback Attempt",
+ "module": "Titan Kcb Mock Server",
+ "engine": "InnoDB",
+ "field_order": [
+  "attempt_no",
+  "attempted_at",
+  "http_status",
+  "response_body",
+  "error"
+ ],
+ "fields": [
+  {
+   "fieldname": "attempt_no",
+   "fieldtype": "Int",
+   "label": "Attempt No",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "attempted_at",
+   "fieldtype": "Datetime",
+   "label": "Attempted At",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "http_status",
+   "fieldtype": "Int",
+   "label": "Http Status",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "response_body",
+   "fieldtype": "Small Text",
+   "label": "Response Body"
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Small Text",
+   "label": "Error"
+  }
+ ],
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "editable_grid": 1,
+ "istable": 1
+}
